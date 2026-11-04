@@ -1,0 +1,16 @@
+{
+  "date": "2026-11-02",
+  "formula_error_scan": "{\"kind\":\"notice\",\"message\":\"Cell search matched 0 entries.\"}",
+  "independent_totals": "passed",
+  "changed_payment_input": "passed",
+  "restored_input": 0.023,
+  "sheets": [
+    "Summary",
+    "Assumptions",
+    "Monthly",
+    "TCO-A",
+    "TCO-B",
+    "TCO-C",
+    "Availability"
+  ]
+}

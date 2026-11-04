@@ -1,0 +1,37 @@
+@startuml
+!pragma layout smetana
+skinparam defaultFontName Arial
+skinparam shadowing false
+skinparam backgroundColor #FFFFFF
+skinparam ArrowColor #36546A
+skinparam packageStyle rectangle
+title Africa Delivery — поток ценности и capabilities
+start
+:Привлечь и идентифицировать
+C1 Identity / Consent;
+:Найти подходящий товар
+C2 Merchandising / Discovery;
+:Принять заказ и резерв
+C3 Commerce / Inventory;
+:Подтвердить оплату
+C4 Collection / Reconciliation;
+if (PSP подтвердил оплату?) then (да)
+ :Передать доставку
+C5 Dispatch / Tracking;
+ :Получить товар и поддержку
+C7 Dispute / Return;
+else (нет)
+ :Pending: сверка; declined: отказ
+C4, повторное списание запрещено;
+endif
+:Уведомить и показать статус
+C6 Transactional Engagement;
+:Измерить ценность
+C8 Operational Insight;
+stop
+legend bottom
+C9 Platform / Security / Recovery поддерживает весь поток.
+PSP и перевозка — Partner; коммерческое ядро — Build; compute / support — Buy.
+Источники A1 / A4 / A6; C01 / C02; деньги в tco-model.xlsx.
+endlegend
+@enduml

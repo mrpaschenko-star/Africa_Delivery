@@ -1,0 +1,53 @@
+{
+  "profile": "A4 portrait, margins42/38/40pt, Arial10.5pt, line14pt; tables9pt/11.5pt, full text",
+  "documents": {
+    "README.md": {
+      "pages": 1,
+      "limit": 1,
+      "passed": true,
+      "text_extracted_chars": 1797
+    },
+    "Task1/architecture-canvas.md": {
+      "pages": 1,
+      "limit": 1,
+      "passed": true,
+      "text_extracted_chars": 1888
+    },
+    "Task1/stakeholder-matrix.md": {
+      "pages": 1,
+      "limit": 2,
+      "passed": true,
+      "text_extracted_chars": 2522
+    },
+    "Task2/architecture-vision.md": {
+      "pages": 2,
+      "limit": 3,
+      "passed": true,
+      "text_extracted_chars": 4745
+    },
+    "Task3/adr-002-caching-strategy.md": {
+      "pages": 1,
+      "limit": 2,
+      "passed": true,
+      "text_extracted_chars": 2267
+    },
+    "Task4/adr-003-data-residency.md": {
+      "pages": 1,
+      "limit": 2,
+      "passed": true,
+      "text_extracted_chars": 2287
+    },
+    "Task5/adr-004-payment-provider.md": {
+      "pages": 1,
+      "limit": 2,
+      "passed": true,
+      "text_extracted_chars": 2443
+    },
+    "Task2/adr-001-architecture-style.md": {
+      "pages": 1,
+      "limit": 2,
+      "passed": true,
+      "text_extracted_chars": 2358
+    }
+  }
+}
