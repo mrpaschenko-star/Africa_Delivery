@@ -1,0 +1,45 @@
+{
+  "date": "2026-11-04",
+  "status": "passed",
+  "checks": {
+    "local_links_checked": 317,
+    "plantuml_png_pairs": 8,
+    "adr_count": 4,
+    "open_questions": 5,
+    "contradictions": 8,
+    "qas": 8,
+    "fmea": 9,
+    "features": {
+      "total": 29,
+      "mvp_partial": 6,
+      "excluded": 1,
+      "deferred": 22
+    },
+    "cn_items": 16,
+    "speech_words": 1212,
+    "pptx_slides": 1,
+    "pptx_text_runs": 17,
+    "xlsx_formulas_with_cache": 625,
+    "xlsx_sheets": [
+      "Summary",
+      "Assumptions",
+      "Monthly",
+      "TCO-A",
+      "TCO-B",
+      "TCO-C",
+      "Availability"
+    ],
+    "page_counts": {
+      "README.md": 1,
+      "Task1/architecture-canvas.md": 1,
+      "Task1/stakeholder-matrix.md": 1,
+      "Task2/architecture-vision.md": 2,
+      "Task3/adr-002-caching-strategy.md": 1,
+      "Task4/adr-003-data-residency.md": 1,
+      "Task5/adr-004-payment-provider.md": 1,
+      "Task2/adr-001-architecture-style.md": 1
+    }
+  },
+  "failures": [],
+  "boundary": "Documentation/package checks only; no production SLA, benchmark, legal approval or vendor contract asserted."
+}

@@ -1,0 +1,48 @@
+@startuml
+!pragma layout smetana
+skinparam defaultFontName Arial
+skinparam shadowing false
+skinparam backgroundColor #FFFFFF
+skinparam ArrowColor #36546A
+skinparam packageStyle rectangle
+title Africa Delivery — сценарии MVP
+left to right direction
+actor Покупатель as buyer
+actor Оператор as ops
+actor Продавец as seller
+actor CEO
+actor "Лицензированный PSP" as psp
+actor "Курьер / шлюз" as partner
+rectangle "Africa Delivery" {
+ usecase "Посмотреть каталог\nи найти товар" as browse
+ usecase "Оформить заказ" as order
+ usecase "Проверить цену /\nзарезервировать stock" as reserve
+ usecase "Оплатить / получить\nподтверждённый статус" as pay
+ usecase "Посмотреть историю\nв простом кабинете" as account
+ usecase "Принять SMS-заявку\nбез обещания оплаты" as offline
+ usecase "KYC / импорт\nкаталога продавца" as onboard
+ usecase "Передать доставку /\nуведомить покупателя" as deliver
+ usecase "Ручной спор / refund\nпо правилам PSP" as refund
+ usecase "Просмотреть KPI\nзадержка ≤15 минут" as kpi
+}
+buyer --> browse
+buyer --> order
+buyer --> account
+buyer --> offline
+buyer --> refund
+order ..> reserve : <<include>>
+order ..> pay : <<include>>
+psp --> pay
+ops --> offline
+ops --> onboard
+seller --> onboard
+ops --> refund
+psp --> refund
+ops --> deliver
+partner --> deliver
+CEO --> kpi
+note bottom of pay
+Pending не равно success.
+Payment callback дедуплицируется.
+end note
+@enduml

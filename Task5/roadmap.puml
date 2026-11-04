@@ -1,0 +1,23 @@
+@startuml
+!pragma layout smetana
+skinparam defaultFontName Arial
+skinparam shadowing false
+skinparam backgroundColor #FFFFFF
+skinparam ArrowColor #36546A
+skinparam packageStyle rectangle
+title Roadmap — этапы и условия финансирования
+left to right direction
+rectangle "M1 — 13.09.2026\nКаталог / CI / sandbox PSP\nCountry / procurement / legal gates\n6 человек; infra $2850/mo\n+ SaaS $150" as m1 #E4EEF7
+rectangle "M2 — MVP 15.10.2026\n6 урезанных функций\nLoad / DR / payment tests\n6 человек; infra $2850/mo\nTotal tech $4025/mo" as m2 #DDEEDD
+rectangle "M6 — 15.04.2027\nZA / extraction decisions\nНовый бюджет до активации\n6 человек до конца M6\nMax tech $4887.50/mo" as m6 #FFF0D2
+rectangle "M12 — 15.10.2027\n5 стран / B2B / returns\nVideo только после DPIA\n8 человек с M7\nInfra $6000; total $12995/mo" as m12 #E4EEF7
+m1 --> m2 : legal / PSP / scope GO
+m2 --> m6 : измерения / pilot learning
+m6 --> m12 : бюджет / найм / country gates
+note bottom of m6
+M1/M2 — месяцы разработки.
+M6/M12 — после запуска.
+В TCO M1 — первый месяц эксплуатации.
+Все цены — план, не договор.
+end note
+@enduml

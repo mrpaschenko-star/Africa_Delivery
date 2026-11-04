@@ -1,0 +1,35 @@
+@startuml
+!pragma layout smetana
+skinparam defaultFontName Arial
+skinparam shadowing false
+skinparam backgroundColor #FFFFFF
+skinparam ArrowColor #36546A
+skinparam packageStyle rectangle
+title Наблюдаемость — одна country cell; повторяется в NG / KE
+rectangle "API / worker / PostgreSQL / Redis" as app
+rectangle "Country ingress / public CDN metrics" as edge
+rectangle "OpenTelemetry Collector\nredaction + sampling + limits" as otel
+rectangle "Prometheus\n30d" as prom
+rectangle "Loki\nmasked logs 14d" as logs
+rectangle "Tempo\ntraces 7d" as traces
+rectangle "Grafana / SLI calculation\nпо стране и PSP" as dash
+rectangle "Alertmanager\nburn rate / P1" as alert
+actor "Primary → Secondary → CTO" as oncall
+rectangle "Global CEO summary\nтолько безопасные агрегаты" as global
+app --> otel : metrics / spans / logs
+edge --> prom : eligible / good / bad
+app --> prom : scrape saturation
+otel --> prom : metrics
+otel --> logs : masked logs
+otel --> traces : sampled spans
+prom --> dash : SLIs / golden signals
+logs --> dash : incident correlation
+traces --> dash : causal trace
+prom --> alert : rules
+alert --> oncall : country / incident ID, без PII
+dash --> global : aggregates, legal gate
+note bottom of app
+Raw PII, IP, phone и реквизиты не экспортируются.
+Telemetry outage = unknown / alert, а не 100% availability.
+end note
+@enduml

@@ -1,0 +1,37 @@
+@startuml
+!pragma layout smetana
+skinparam defaultFontName Arial
+skinparam shadowing false
+skinparam backgroundColor #FFFFFF
+skinparam ArrowColor #36546A
+skinparam packageStyle rectangle
+!define RELATIVE_INCLUDE
+!include ../vendor/C4-PlantUML/C4_Container.puml
+title Africa Delivery — C4 Context, пилот NG / KE
+LAYOUT_TOP_DOWN()
+Person(buyer, "Покупатель", "PWA; SMS при отсутствии интернета")
+Person(seller, "Продавец", "100 проверенных продавцов")
+Person(ops, "Оператор / CEO", "KYC, dispatch, отчётность")
+System(ad, "Africa Delivery", "Каталог, заказ, платёжный учёт, доставка, уведомления")
+System_Ext(fw, "Flutterwave", "NG: local payment; licensed partner")
+System_Ext(ps, "Paystack", "KE: M-Pesa collection")
+System_Ext(mp, "M-Pesa", "Мобильные деньги; direct adapter отложен")
+System_Ext(sb, "Sendbox", "NG; договор и API gate")
+System_Ext(sy, "Sendy / альтернативный KE carrier", "Sendy из кейса; доступность НЕ подтверждена")
+System_Ext(wa, "WhatsApp Business API", "Сообщения после DPA / transfer approval")
+System_Ext(sms, "SMS / USSD gateway", "SMS MVP; USSD pilot M6, нужен GSM")
+Rel(buyer, ad, "Просмотр, заказ, статус", "HTTPS / JSON")
+Rel(seller, ad, "Данные товаров через оператора", "CSV / HTTPS")
+Rel(ops, ad, "Модерация, споры, KPI", "HTTPS / MFA")
+Rel(ad, fw, "Создать intent, проверить статус / refund", "HTTPS REST")
+Rel(fw, ad, "Подписанный callback", "HTTPS")
+Rel(ad, ps, "M-Pesa intent / status / refund", "HTTPS REST")
+Rel(ps, mp, "Выполнить M-Pesa транзакцию", "Partner API")
+Rel(ps, ad, "Callback / settlement reference", "HTTPS")
+Rel(ad, sb, "Dispatch / tracking", "HTTPS REST")
+Rel(ad, sy, "Dispatch по подтверждённому договору", "API / защищённый manual workflow")
+Rel(ad, wa, "Разрешённое уведомление", "HTTPS")
+Rel(ad, sms, "SMS / delivery receipt; USSD M6", "HTTPS")
+Rel(buyer, sms, "SMS-заявка / USSD session", "GSM")
+Rel(sms, ad, "Intake / delivery receipt", "Authenticated webhook")
+@enduml

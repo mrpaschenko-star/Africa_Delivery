@@ -1,0 +1,45 @@
+@startuml
+!pragma layout smetana
+skinparam defaultFontName Arial
+skinparam shadowing false
+skinparam backgroundColor #FFFFFF
+skinparam ArrowColor #36546A
+skinparam packageStyle rectangle
+title Развёртывание — шаблон country cell (отдельно Nigeria и Kenya)
+node "Country boundary: NG ИЛИ KE\nPII / keys / backup не покидают страну" as country {
+ node "Primary local DC\nдва независимых узла" as dc1 {
+  node "VM node A" {
+   artifact "API replica 1\ncontainer" as api1
+   database "PostgreSQL primary" as primary
+  }
+  node "VM node B" {
+   artifact "API replica 2 + worker\ncontainers" as api2
+   database "PostgreSQL sync standby" as sync
+  }
+  node "Country LB pair / VIP" as lb
+  database "Redis public cache" as redis
+  node "OTel / monitoring\nlocal key store" as obs
+ }
+ node "Independent local DC\nв той же стране; procurement gate" as dc2 {
+  database "WAL archive / encrypted backup\nDR restore capacity" as dr
+  node "Escrow keys + IaC recovery" as keys
+ }
+ lb --> api1 : HTTPS / readiness
+ lb --> api2 : HTTPS / readiness
+ api1 --> primary : SQL transaction
+ api2 --> primary : SQL / jobs
+ primary --> sync : synchronous WAL / node RPO0
+ primary --> dr : async WAL ≤5min lag
+ api1 --> redis : cache-aside
+ api2 --> obs : masked signals
+ obs --> keys : encrypted key escrow / before activation
+}
+cloud "Public Internet / PSP\nтолько approved data flows" as internet
+internet --> lb : TLS / signed callbacks
+note bottom of dr
+DC failover: fence old writer → restore → reconcile → reroute.
+RTO ≤60min safe service; RPO ≤5min; payment hold до сверки.
+Вся страна недоступна: checkout stop, foreign PII failover запрещён.
+Независимость DC и цены ещё не подтверждены.
+end note
+@enduml

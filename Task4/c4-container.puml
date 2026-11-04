@@ -1,0 +1,51 @@
+@startuml
+!pragma layout smetana
+skinparam defaultFontName Arial
+skinparam shadowing false
+skinparam backgroundColor #FFFFFF
+skinparam ArrowColor #36546A
+skinparam packageStyle rectangle
+!define RELATIVE_INCLUDE
+!include ../vendor/C4-PlantUML/C4_Container.puml
+title Africa Delivery — C4 Container, MVP и следующая страна
+LAYOUT_TOP_DOWN()
+Person(buyer, "Покупатель", "Верная country cell по профилю")
+Container(pwa, "PWA", "Browser", "Public offline browse; checkout online")
+Container(cdn, "Public CDN", "HTTP cache", "Версионированные публичные изображения; legal log policy")
+System_Ext(psp, "PSP / SMS / WhatsApp / carrier", "Отдельный legal gate каждого processor")
+Boundary(ng, "Nigeria — in-country", "Deployment country") {
+ Container(ngapi, "API / back-office", "Go modules", "Identity, Consent, Catalog, Orders, Payments; 2 replicas")
+ Container(ngworker, "Worker", "Go", "Outbox, reconciliation, dispatch, notify, reporting")
+ ContainerDb(ngdb, "Country database", "PostgreSQL HA", "Schemas by module; inbox/outbox, ledger; local DR")
+ ContainerDb(ngcache, "Public catalog cache", "Redis", "TTL 60–300s; не money source")
+ Container(ngobs, "Local telemetry", "OTel / Prometheus / Loki / Tempo", "PII redaction; local keys / backups")
+}
+Boundary(ke, "Kenya — in-country", "Deployment country") {
+ Container(keapi, "API / back-office", "Go modules", "Тот же образ, независимые данные; 2 replicas")
+ Container(keworker, "Worker", "Go", "Country jobs и partner adapters")
+ ContainerDb(kedb, "Country database", "PostgreSQL HA", "Country schemas, ledger; local DR")
+ ContainerDb(kecache, "Public catalog cache", "Redis", "Восстанавливаемый кеш")
+ Container(keobs, "Local telemetry", "OTel stack", "Country-only raw signals")
+}
+Boundary(za, "South Africa — M6 decision / M7+ funding gate", "Deployment country") {
+ Container(zaapi, "Следующая country cell", "Тот же image / IaC", "Активация только после legal / capacity / budget gate")
+ ContainerDb(zadb, "ZA data", "PostgreSQL / local keys", "PII не копируется из NG / KE")
+}
+Rel(buyer, pwa, "Просмотр / заказ", "HTTPS")
+Rel(pwa, cdn, "Публичные медиа", "HTTPS")
+Rel(pwa, ngapi, "NG account / checkout", "HTTPS JSON")
+Rel(pwa, keapi, "KE account / checkout", "HTTPS JSON")
+Rel(ngapi, ngdb, "Own schema transaction + outbox", "SQL/TLS")
+Rel(keapi, kedb, "Own schema transaction + outbox", "SQL/TLS")
+Rel(ngworker, ngdb, "Lease jobs / inbox / reconcile", "SQL/TLS")
+Rel(keworker, kedb, "Lease jobs / inbox / reconcile", "SQL/TLS")
+Rel(ngapi, ngcache, "Cache-aside public catalog", "Redis/TLS")
+Rel(keapi, kecache, "Cache-aside public catalog", "Redis/TLS")
+Rel(ngworker, psp, "Approved NG fields / provider status", "HTTPS")
+Rel(keworker, psp, "Approved KE fields / provider status", "HTTPS")
+Rel(psp, ngapi, "Verified callback → durable inbox", "HTTPS")
+Rel(psp, keapi, "Verified callback → durable inbox", "HTTPS")
+Rel(ngapi, ngobs, "Masked metrics / logs / traces", "OTLP")
+Rel(keapi, keobs, "Masked metrics / logs / traces", "OTLP")
+Rel(zaapi, zadb, "Only ZA subjects", "SQL/TLS")
+@enduml
